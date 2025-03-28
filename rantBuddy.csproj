@@ -7,4 +7,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="RantBuddyBusinessDataLogic\**" />
+    <EmbeddedResource Remove="RantBuddyBusinessDataLogic\**" />
+    <None Remove="RantBuddyBusinessDataLogic\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="RantBuddyBusinessDataLogic\RantBuddyBusinessDataLogic.csproj" />
+  </ItemGroup>
+
 </Project>
