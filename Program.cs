@@ -19,7 +19,7 @@ namespace rantBuddy
 
             while (true)
             {
-                Console.Write("\nPlease enter your passcode: \n");
+                Console.Write("\nPlease enter your 4-digit passcode: \n");
                 string input = Console.ReadLine();
 
                 if (int.TryParse(input, out password) && password == passcode)
