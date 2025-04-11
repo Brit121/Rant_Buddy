@@ -4,39 +4,57 @@ using RantBuddyBusinessDataLogic;
 
 namespace rantBuddy
 
-
 {
     internal class Program
     {
-        static string[] actions = new string[] { "[1] Create or Add an Entry", "[2] Retrieve or View Entries", "[3] Update an Entry", "[4] Delete an Entry", "[5] Search", "[6] Exit" };
-        // actions to be displayed
+        static string[] actions = new string[]
+        {   "[1] Create or Add an Entry",
+            "[2] Retrieve or View Entries",
+            "[3] Update an Entry",
+            "[4] Delete an Entry",
+            "[5] Search",
+            "[6] Exit"
+        };
+        // variables to store the username and pin
+        static RantBuddyService rantbuddyService = new RantBuddyService();
+      
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, Welcome to your Rant Buddy!");
+            Console.WriteLine("Hello, Welcome to Rant Buddy!");
             //passcode, create and add entry, retrieve or view entries, update entry, delete entries,search keyword, exit
-
-            int password;
-
+            string UserName = string.Empty;
+            string Pin = string.Empty;
 
             while (true)
+            // loop until the user enters the correct pin
             {
-                Console.Write("\nPlease enter your 4-digit pin: \n");
-                string input = Console.ReadLine();
-
-                if (int.TryParse(input, out password) && password == RantBuddyService.pin)
-                // checks if the input is a valid integer and matches the pin
+                Console.WriteLine("\nPlease enter your UserName: \n");
+                UserName = Console.ReadLine();
+                if (string.IsNullOrEmpty(UserName))
                 {
-                    Console.WriteLine("\n------------- Logged In Successfully! Welcome! --------------");
-                    break;
+                    Console.WriteLine("\n------- Invalid UserName. Please Try Again! --------");
+                    continue;
+                }
+                Console.Write("\nPlease enter your 4-digit pin: \n");
+                Pin = Console.ReadLine();
+                if (string.IsNullOrEmpty(Pin))
+                {
+                    Console.WriteLine("\n------- Invalid Pin. Please Try Again! --------");
+                    continue;
+                }
+                if (!rantbuddyService.ValidateAccount(UserName, Pin))
+                {
+                    Console.WriteLine("\n------- Incorrect Account. Please Try Again! --------");
                 }
                 else
                 {
-                    Console.WriteLine("\n------------- Incorrect Pin! Please use four numbers only.--------------");
+                    break;
                 }
             }
+            // checks if the account is valid
 
+            Console.WriteLine("\n----------------- Account Verified! Logged In Successfully! -----------------");
             int userOption;
-
             do
             {
                 DisplayActions();
@@ -99,7 +117,7 @@ namespace rantBuddy
         static void CreateOrAddEntry()
         // creates or adds an entry
         {
-            if (RantBuddyService.rantEntries.Count == 0)
+            if (rantbuddyService.rantEntries.Count == 0)
             {
                 Console.WriteLine("\nPlease create your first entry: \n");
             }
@@ -111,7 +129,7 @@ namespace rantBuddy
             string entry = Console.ReadLine();
             if (!string.IsNullOrEmpty(entry))
             {
-                RantBuddyService.rantEntries.Add(entry);
+                rantbuddyService.rantEntries.Add(entry);
                 Console.WriteLine("\n------- Entry Added Successfully! ---------");
             }
             else
@@ -122,7 +140,7 @@ namespace rantBuddy
         static void RetrieveOrViewEntries()
         // retrieves or views the entries
         {
-            bool result = RantBuddyService.HasEntries();
+            bool result = rantbuddyService.HasEntries();
             {
                 if (result == false)
                 {
@@ -131,9 +149,9 @@ namespace rantBuddy
                 else
                 {
                     Console.WriteLine("\n----------------- Entries: ");
-                    for (int i = 0; i < RantBuddyService.rantEntries.Count; i++)
+                    for (int i = 0; i < rantbuddyService.rantEntries.Count; i++)
                     {
-                        Console.WriteLine($"\n{i + 1}. {RantBuddyService.rantEntries[i]}");
+                        Console.WriteLine($"\n{i + 1}. {rantbuddyService.rantEntries[i]}");
                         Console.WriteLine("\n------------------------------------------------");
                     }
                 }
@@ -142,26 +160,26 @@ namespace rantBuddy
         static void UpdateEntry()
         // updates an entry
         {
-            if (RantBuddyService.rantEntries.Count == 0)
+            if (rantbuddyService.rantEntries.Count == 0)
             {
                 Console.WriteLine("\n--------------- No Entries to update. --------------");
                 Console.WriteLine("\n-----------------------------------------------------");
 
             }
             Console.WriteLine("\nEntries: ");
-            for (int i = 0; i < RantBuddyService.rantEntries.Count; i++)
+            for (int i = 0; i < rantbuddyService.rantEntries.Count; i++)
             {
-                Console.WriteLine($"\n{i + 1}. {RantBuddyService.rantEntries[i]}");
+                Console.WriteLine($"\n{i + 1}. {rantbuddyService.rantEntries[i]}");
                 Console.WriteLine("\n------------------------------------------------");
             }
             Console.WriteLine("\nPlease enter the index number of the entry you want to update:  ");
-            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= RantBuddyService.rantEntries.Count)
+            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= rantbuddyService.rantEntries.Count)
             {
                 Console.WriteLine("\nPlease enter the new entry: ");
                 string newEntry = Console.ReadLine();
                 if (!string.IsNullOrEmpty(newEntry))
                 {
-                    RantBuddyService.rantEntries[index - 1] = newEntry;
+                    rantbuddyService.rantEntries[index - 1] = newEntry;
                     Console.WriteLine("\n--------------- Entry updated successfully! --------------------");
                     Console.WriteLine("\n------------------------------------------------------------------");
                 }
@@ -180,7 +198,7 @@ namespace rantBuddy
         static void SearchKeyword()
         // searches for a keyword in the entries
         {
-            if (RantBuddyService.rantEntries.Count == 0)
+            if (rantbuddyService.rantEntries.Count == 0)
             {
                 Console.WriteLine("\n--------------- No Entries in the List. --------------");
                 Console.WriteLine("\n-----------------------------------------------------");
@@ -190,7 +208,7 @@ namespace rantBuddy
 
             Console.WriteLine(" Please Enter a Keyword to search for: ");
             string keyword = Console.ReadLine();
-            var foundEntries = RantBuddyService.rantEntries.FindAll(entry => entry.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+            var foundEntries = rantbuddyService.rantEntries.FindAll(entry => entry.Contains(keyword, StringComparison.OrdinalIgnoreCase));
 
             if (foundEntries.Count > 0)
             {
@@ -213,22 +231,22 @@ namespace rantBuddy
         static void DeleteEntry()
         // deletes an entry
         {
-            if (RantBuddyService.rantEntries.Count == 0)
+            if (rantbuddyService.rantEntries.Count == 0)
             {
                 Console.WriteLine("\n--------------- No Entries to delete. --------------");
                 Console.WriteLine("\n-----------------------------------------------------");
                 return;
             }
             Console.WriteLine("\nEntries: ");
-            for (int i = 0; i < RantBuddyService.rantEntries.Count; i++)
+            for (int i = 0; i < rantbuddyService.rantEntries.Count; i++)
             {
-                Console.WriteLine($"\n{i + 1}. {RantBuddyService.rantEntries[i]}");
+                Console.WriteLine($"\n{i + 1}. {rantbuddyService.rantEntries[i]}");
                 Console.WriteLine("\n------------------------------------------------");
             }
             Console.WriteLine("\nPlease enter the index number of the entry you want to delete:  ");
-            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= RantBuddyService.rantEntries.Count)
+            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= rantbuddyService.rantEntries.Count)
             {
-                RantBuddyService.rantEntries.RemoveAt(index - 1);
+                rantbuddyService.rantEntries.RemoveAt(index - 1);
                 Console.WriteLine("\n--------------- Entry deleted successfully! --------------------");
                 Console.WriteLine("\n------------------------------------------------------------------");
             }

@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace RantBuddyBusinessDataLogic
 {
     public enum Actions
+    // enum to store the actions
     {
-            CreateOrAddEntry,
-            RetrieveOrViewEntries,
-            UpdateEntry,
-            DeleteEntry,
-            Search,
-            Exit
-        
+        CreateOrAddEntry = 1,
+        RetrieveOrViewEntries,
+        UpdateEntry,
+        DeleteEntry,
+        Search,
+        Exit
     }
 }
