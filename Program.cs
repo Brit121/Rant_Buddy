@@ -16,7 +16,7 @@ namespace rantBuddy
             "[6] Exit"
         };
         // variables to store the username and pin
-        static RantBuddyService rantbuddyService = new RantBuddyService();
+        static RantBuddyService.RantBuddyService rantbuddyService = new RantBuddyService.RantBuddyService();
       
         static void Main(string[] args)
         {
@@ -209,6 +209,7 @@ namespace rantBuddy
             Console.WriteLine(" Please Enter a Keyword to search for: ");
             string keyword = Console.ReadLine();
             var foundEntries = rantbuddyService.rantEntries.FindAll(entry => entry.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+            // checks if the keyword is present in the entries
 
             if (foundEntries.Count > 0)
             {

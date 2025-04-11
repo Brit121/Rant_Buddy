@@ -22,6 +22,5 @@ namespace RantBuddyCommon
             }
         }
         public string UserName { get; set; }
-
     }
 }

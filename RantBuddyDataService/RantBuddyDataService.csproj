@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RantBuddyDataService\RantBuddyDataService.csproj" />
+    <ProjectReference Include="..\RantBuddyCommon\RantBuddyCommon.csproj" />
   </ItemGroup>
 
 </Project>

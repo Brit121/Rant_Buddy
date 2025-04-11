@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rantBuddy", "rantBuddy.cspr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RantBuddyBusinessDataLogic", "RantBuddyBusinessDataLogic\RantBuddyBusinessDataLogic.csproj", "{C5F765C9-7AE2-40D2-890C-B2144E12C796}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RantBuddyDataService", "RantBuddyDataService\RantBuddyDataService.csproj", "{3B3C018C-F07E-44FC-AA24-2741083CA619}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RantBuddyCommon", "RantBuddyCommon\RantBuddyCommon.csproj", "{0E4D0939-A809-4DCB-88BF-5BED47BF02EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{C5F765C9-7AE2-40D2-890C-B2144E12C796}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5F765C9-7AE2-40D2-890C-B2144E12C796}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5F765C9-7AE2-40D2-890C-B2144E12C796}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B3C018C-F07E-44FC-AA24-2741083CA619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B3C018C-F07E-44FC-AA24-2741083CA619}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B3C018C-F07E-44FC-AA24-2741083CA619}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B3C018C-F07E-44FC-AA24-2741083CA619}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E4D0939-A809-4DCB-88BF-5BED47BF02EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E4D0939-A809-4DCB-88BF-5BED47BF02EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E4D0939-A809-4DCB-88BF-5BED47BF02EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E4D0939-A809-4DCB-88BF-5BED47BF02EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

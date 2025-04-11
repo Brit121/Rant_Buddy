@@ -9,8 +9,14 @@
 
   <ItemGroup>
     <Compile Remove="RantBuddyBusinessDataLogic\**" />
+    <Compile Remove="RantBuddyCommon\**" />
+    <Compile Remove="RantBuddyDataService\**" />
     <EmbeddedResource Remove="RantBuddyBusinessDataLogic\**" />
+    <EmbeddedResource Remove="RantBuddyCommon\**" />
+    <EmbeddedResource Remove="RantBuddyDataService\**" />
     <None Remove="RantBuddyBusinessDataLogic\**" />
+    <None Remove="RantBuddyCommon\**" />
+    <None Remove="RantBuddyDataService\**" />
   </ItemGroup>
 
   <ItemGroup>
