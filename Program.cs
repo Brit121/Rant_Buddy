@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System;
-using RantBuddyBusinessDataLogic;
-
-namespace rantBuddy
+﻿namespace rantBuddy
 
 {
     internal class Program
