@@ -1,256 +1,241 @@
-﻿namespace rantBuddy
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using RantBuddyCommon;
+using RantBuddyDataService;
 
+namespace RantBuddy
 {
     internal class Program
     {
-        static string[] actions = new string[]
-        {   "[1] Create or Add an Entry",
-            "[2] Retrieve or View Entries",
-            "[3] Update an Entry",
-            "[4] Delete an Entry",
-            "[5] Search",
-            "[6] Exit"
-        };
-        // variables to store the username and pin
-        static RantBuddyService.RantBuddyService rantbuddyService = new RantBuddyService.RantBuddyService();
-      
+        static RantService rant = new RantService();
+        static string currentUsername = "";
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hello, Welcome to Rant Buddy!");
-            //passcode, create and add entry, retrieve or view entries, update entry, delete entries,search keyword, exit
-            string UserName = string.Empty;
-            string Pin = string.Empty;
 
+            // Login loop
             while (true)
-            // loop until the user enters the correct pin
             {
-                Console.WriteLine("\nPlease enter your UserName: \n");
-                UserName = Console.ReadLine();
-                if (string.IsNullOrEmpty(UserName))
+                Console.WriteLine("\nPlease enter your Username: ");
+                string username = Console.ReadLine();
+                if (string.IsNullOrEmpty(username))
                 {
-                    Console.WriteLine("\n------- Invalid UserName. Please Try Again! --------");
+                    Console.WriteLine("Invalid Username. Please try again.");
                     continue;
                 }
-                Console.Write("\nPlease enter your 4-digit pin: \n");
-                Pin = Console.ReadLine();
-                if (string.IsNullOrEmpty(Pin))
+
+                Console.WriteLine("Please enter your 4-digits pin: ");
+                string pin = Console.ReadLine();
+                if (string.IsNullOrEmpty(pin))
                 {
-                    Console.WriteLine("\n------- Invalid Pin. Please Try Again! --------");
+                    Console.WriteLine("Invalid Pin. Please try again.");
                     continue;
                 }
-                if (!rantbuddyService.ValidateAccount(UserName, Pin))
+
+                if (rant.ValidateAccount(username, pin))
                 {
-                    Console.WriteLine("\n------- Incorrect Account. Please Try Again! --------");
-                }
-                else
-                {
+                    currentUsername = username;
                     break;
                 }
+                else
+                {
+                    Console.WriteLine("Incorrect account details. Please try again.");
+                }
             }
-            // checks if the account is valid
 
-            Console.WriteLine("\n----------------- Account Verified! Logged In Successfully! -----------------");
-            int userOption;
+            Console.WriteLine($"\n----------------- Welcome, {currentUsername}! Logged in successfully! -----------------");
+
+            int choice;
             do
             {
-                DisplayActions();
+                DisplayMenu();
 
-                userOption = GetUserOption();
+                choice = GetUserChoice();
 
+                switch (choice)
                 {
-                    switch (userOption)
-                    {
-                        case 1:
-                            CreateOrAddEntry();
-                            break;
-                        case 2:
-                            RetrieveOrViewEntries();
-                            break;
-                        case 3:
-                            UpdateEntry();
-                            break;
-                        case 4:
-                            DeleteEntry();
-                            break;
-                        case 5:
-                            SearchKeyword();
-                            break;
-                        case 6:
-                            Console.WriteLine("\n------------ Sayonara!!!!!!!!! ------------");
-                            break;
-                    }
+                    case 1: CreateOrAddEntry(); break;
+                    case 2: RetrieveOrViewEntries(); break;
+                    case 3: UpdateEntry(); break;
+                    case 4: DeleteEntry(); break;
+                    case 5: SearchEntries(); break;
+                    case 6: Console.WriteLine("Sayonara!"); break;
                 }
-            }
 
-            while (userOption != 6);
+            } while (choice != 6);
+        }
 
-        }
-        static void DisplayActions()
-        // displays the actions
+        static void DisplayMenu()
         {
-            Console.WriteLine("\nPlease choose an option: ");
-            foreach (string action in actions)
-            {
-                Console.WriteLine(action);
-            }
+            Console.WriteLine("\nChoose an option:");
+            Console.WriteLine("[1] Create or Add an Entry");
+            Console.WriteLine("[2] Retrieve or View Entries");
+            Console.WriteLine("[3] Update an Entry");
+            Console.WriteLine("[4] Delete an Entry");
+            Console.WriteLine("[5] Search Entries");
+            Console.WriteLine("[6] Exit");
         }
-        static int GetUserOption()
-        // gets the user option
+
+        static int GetUserChoice()
         {
-            int option;
             while (true)
             {
-                Console.Write("\n[User Option]:  \n");
+                Console.WriteLine("Enter your choice (1-6): ");
                 string input = Console.ReadLine();
-                if (int.TryParse(input, out option) && option >= 1 && option <= 6)
+
+                if (int.TryParse(input, out int choice) && choice >= 1 && choice <= 6)
                 {
-                    return option;
+                    return choice;
                 }
-                Console.Write("\n------ Invalid choice of Option! Please choose a number from 1 to 6 only! -------");
-                Console.Write("\n------------------------------------------------------------------------------");
+                Console.WriteLine("Invalid choice. Please enter a number between 1 and 6.");
             }
         }
+
         static void CreateOrAddEntry()
-        // creates or adds an entry
         {
-            if (rantbuddyService.rantEntries.Count == 0)
-            {
-                Console.WriteLine("\nPlease create your first entry: \n");
-            }
+            var userRants = rant.GetRants()
+                .Where(r => r.Username.Equals(currentUsername, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (userRants.Count == 0)
+                Console.WriteLine("\nThis is your first entry! Please type your first rant:");
             else
-            {
-                Console.WriteLine("\nAdd a new entry: \n");
-            }
+                Console.WriteLine("\nAdd a new entry:");
 
             string entry = Console.ReadLine();
+
             if (!string.IsNullOrEmpty(entry))
             {
-                rantbuddyService.rantEntries.Add(entry);
-                Console.WriteLine("\n------- Entry Added Successfully! ---------");
+                rant.AddRant(new Rant { Username = currentUsername, Content = entry });
+                Console.WriteLine("Entry added successfully!");
             }
             else
             {
-                Console.Write("\nNo Entry Provided. Please Enter an Entry.\n");
+                Console.WriteLine("No entry provided. Please try again.");
             }
         }
+
         static void RetrieveOrViewEntries()
-        // retrieves or views the entries
         {
-            bool result = rantbuddyService.HasEntries();
+            var userRants = rant.GetRants()
+                .Where(r => r.Username.Equals(currentUsername, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (userRants.Count == 0)
             {
-                if (result == false)
-                {
-                    Console.WriteLine("\n----------------- No Entries to Display. -----------------");
-                }
-                else
-                {
-                    Console.WriteLine("\n----------------- Entries: ");
-                    for (int i = 0; i < rantbuddyService.rantEntries.Count; i++)
-                    {
-                        Console.WriteLine($"\n{i + 1}. {rantbuddyService.rantEntries[i]}");
-                        Console.WriteLine("\n------------------------------------------------");
-                    }
-                }
+                Console.WriteLine("\nNo entries to display. Why not create one?");
+                return;
+            }
+
+            Console.WriteLine("\nYour Entries:");
+            for (int i = 0; i < userRants.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {userRants[i].Content}");
             }
         }
+
         static void UpdateEntry()
-        // updates an entry
         {
-            if (rantbuddyService.rantEntries.Count == 0)
-            {
-                Console.WriteLine("\n--------------- No Entries to update. --------------");
-                Console.WriteLine("\n-----------------------------------------------------");
+            var userRants = rant.GetRants()
+                .Where(r => r.Username.Equals(currentUsername, StringComparison.OrdinalIgnoreCase))
+                .ToList();
 
-            }
-            Console.WriteLine("\nEntries: ");
-            for (int i = 0; i < rantbuddyService.rantEntries.Count; i++)
+            if (userRants.Count == 0)
             {
-                Console.WriteLine($"\n{i + 1}. {rantbuddyService.rantEntries[i]}");
-                Console.WriteLine("\n------------------------------------------------");
+                Console.WriteLine("\nNo entries to update. Please add one first.");
+                return;
             }
-            Console.WriteLine("\nPlease enter the index number of the entry you want to update:  ");
-            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= rantbuddyService.rantEntries.Count)
+
+            Console.WriteLine("\nYour Entries:");
+            for (int i = 0; i < userRants.Count; i++)
             {
-                Console.WriteLine("\nPlease enter the new entry: ");
-                string newEntry = Console.ReadLine();
-                if (!string.IsNullOrEmpty(newEntry))
+                Console.WriteLine($"{i + 1}. {userRants[i].Content}");
+            }
+
+            Console.Write("Enter the number of the entry you want to update: ");
+            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= userRants.Count)
+            {
+                Console.Write("Enter the new content: ");
+                string newContent = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(newContent))
                 {
-                    rantbuddyService.rantEntries[index - 1] = newEntry;
-                    Console.WriteLine("\n--------------- Entry updated successfully! --------------------");
-                    Console.WriteLine("\n------------------------------------------------------------------");
+                    rant.UpdateRant(index - 1, new Rant { Username = currentUsername, Content = newContent });
+                    Console.WriteLine("Entry updated successfully!");
                 }
                 else
                 {
-                    Console.WriteLine("\n--------- Invalid Entry! Please Try Again. ----------");
-                    Console.WriteLine("\n--------------------------------------------------");
+                    Console.WriteLine("New content cannot be empty.");
                 }
             }
             else
             {
-                Console.WriteLine("\n--------- Invalid choice of index number! Please Try Again. ----------");
-                Console.WriteLine("\n--------------------------------------------------");
+                Console.WriteLine("Invalid entry number.");
             }
         }
-        static void SearchKeyword()
-        // searches for a keyword in the entries
-        {
-            if (rantbuddyService.rantEntries.Count == 0)
-            {
-                Console.WriteLine("\n--------------- No Entries in the List. --------------");
-                Console.WriteLine("\n-----------------------------------------------------");
-                return;
 
-            }
-
-            Console.WriteLine(" Please Enter a Keyword to search for: ");
-            string keyword = Console.ReadLine();
-            var foundEntries = rantbuddyService.rantEntries.FindAll(entry => entry.Contains(keyword, StringComparison.OrdinalIgnoreCase));
-            // checks if the keyword is present in the entries
-
-            if (foundEntries.Count > 0)
-            {
-                Console.WriteLine("--------------------------");
-                Console.WriteLine("\nFound Entries: \n");
-                foreach (var entry in foundEntries)
-                {
-                    Console.WriteLine(entry);
-                    Console.WriteLine("--------------------------");
-
-                }
-            }
-            else
-            {
-                Console.WriteLine("\n-----------------------------------------------------");
-                Console.WriteLine("No Entries found matching the Keyword you're searching for.");
-                Console.WriteLine("\n-----------------------------------------------------");
-            }
-        }
         static void DeleteEntry()
-        // deletes an entry
         {
-            if (rantbuddyService.rantEntries.Count == 0)
+            var userRants = rant.GetRants()
+                .Where(r => r.Username.Equals(currentUsername, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (userRants.Count == 0)
             {
-                Console.WriteLine("\n--------------- No Entries to delete. --------------");
-                Console.WriteLine("\n-----------------------------------------------------");
+                Console.WriteLine("\nNo entries to delete.");
                 return;
             }
-            Console.WriteLine("\nEntries: ");
-            for (int i = 0; i < rantbuddyService.rantEntries.Count; i++)
+
+            Console.WriteLine("\nYour Entries:");
+            for (int i = 0; i < userRants.Count; i++)
             {
-                Console.WriteLine($"\n{i + 1}. {rantbuddyService.rantEntries[i]}");
-                Console.WriteLine("\n------------------------------------------------");
+                Console.WriteLine($"{i + 1}. {userRants[i].Content}");
             }
-            Console.WriteLine("\nPlease enter the index number of the entry you want to delete:  ");
-            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= rantbuddyService.rantEntries.Count)
+
+            Console.Write("Enter the number of the entry you want to delete: ");
+            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= userRants.Count)
             {
-                rantbuddyService.rantEntries.RemoveAt(index - 1);
-                Console.WriteLine("\n--------------- Entry deleted successfully! --------------------");
-                Console.WriteLine("\n------------------------------------------------------------------");
+                rant.DeleteRant(index - 1);
+                Console.WriteLine("Entry deleted successfully!");
             }
             else
             {
-                Console.WriteLine("\n--------- Invalid choice of index number! Please Try Again. ----------");
-                Console.WriteLine("\n----------------------------------------------------------");
+                Console.WriteLine("Invalid entry number.");
+            }
+        }
+
+        static void SearchEntries()
+        {
+            var userRants = rant.GetRants()
+                .Where(r => r.Username.Equals(currentUsername, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (userRants.Count == 0)
+            {
+                Console.WriteLine("\nNo entries to search.");
+                return;
+            }
+
+            Console.Write("Enter keyword to search: ");
+            string keyword = Console.ReadLine();
+
+            var results = userRants
+                .Where(r => r.Content.IndexOf(keyword ?? "", StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
+
+            if (results.Count == 0)
+            {
+                Console.WriteLine("No entries matched your search.");
+            }
+            else
+            {
+                Console.WriteLine("\nSearch results:");
+                foreach (var rant in results)
+                {
+                    Console.WriteLine($"- {rant.Content}");
+                }
             }
         }
     }

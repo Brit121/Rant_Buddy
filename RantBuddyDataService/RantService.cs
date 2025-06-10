@@ -1,29 +1,56 @@
-﻿using RantBuddyCommon;
+﻿using System.Collections.Generic;
+using RantBuddyCommon;
+using RantBuddyDataService;
 
-namespace RantBuddyDataService
+namespace RantBuddy
 {
     public class RantService
     {
-        private RantDataService RantDataService; 
+        private IRantDataService dataService;
+
+        public JSONFileDataService JSONFileDataService { get; }
 
         public RantService()
         {
-            RantDataService = new InMemoryDataService();
-           // RantDataService = new TextFileDataService();
-           // RantDataService = new JSONFileDataService(); 
+           // dataService = new JSONFileDataService(); //for JSON
+           // dataService = new TextFileDataService(); //for TextFile
+            dataService = new InMemoryDataService(); //for InMemory
         }
 
-        public void AddRant(Rant rant) => RantDataService.AddEntry(rant);
+        public RantService(JSONFileDataService jSONFileDataService)
+        {
+            JSONFileDataService = jSONFileDataService;
+            dataService = jSONFileDataService; 
+        }
 
-        public List<Rant> GetRants() => RantDataService.LoadRants();
+        public bool ValidateAccount(string username, string pin)
+        {
+            return dataService.ValidateAccount(username, pin);
+        }
 
-        public void DeleteRant(int index) => RantDataService.DeleteEntry(index);
+        public void AddRant(Rant rant)
+        {
+            dataService.AddEntry(rant);
+        }
 
-        public void UpdateRant(int index, Rant newRant) => RantDataService.UpdateEntry(index, newRant);
+        public List<Rant> GetRants()
+        {
+            return dataService.LoadRants();
+        }
 
-        public List<Rant> SearchRants(string keyword) => RantDataService.SearchEntry(keyword);
+        public void UpdateRant(int index, Rant newRant)
+        {
+            dataService.UpdateEntry(index, newRant);
+        }
 
-        public bool ValidateAccount(string username, string password) => RantDataService.ValidateAccount(username, password);
+        public void DeleteRant(int index)
+        {
+            dataService.DeleteEntry(index);
+        }
 
+        public List<Rant> SearchRants(string keyword)
+        {
+            return dataService.SearchEntry(keyword);
+        }
     }
 }

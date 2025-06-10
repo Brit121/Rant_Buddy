@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace RantBuddyDataService
 {
@@ -20,15 +21,8 @@ namespace RantBuddyDataService
         private void CreateDummyAccounts()
         {
             // creates dummy accounts for testing purposes.(instantiate)
-            RBAccount account1 = new RBAccount();
-            account1.UserName = "Brit";
-            account1.Pin = "1201";
-            accounts.Add(account1);
-
-            RBAccount account2 = new RBAccount();
-            account2.UserName = "Taniah";
-            account2.Pin = "1234";
-            accounts.Add(account2);
+            RBAccount account1 = new RBAccount("Brit", "1201");
+            RBAccount account2 = new RBAccount("Taniah", "1234");
         }
 
         public bool ValidateAccount(string UserName, string Pin)

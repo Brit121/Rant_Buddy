@@ -1,51 +1,61 @@
-﻿using RantBuddyCommon; 
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using RantBuddyCommon;
 
 namespace RantBuddyDataService
 {
-    public class InMemoryDataService : RantDataService
+    public class InMemoryDataService : IRantDataService
     {
-        private List<Rant> rantEntries = new List<Rant>();
-        private Dictionary<string, string> accounts = new Dictionary<string, string>();
-
-        public InMemoryDataService()
+        private List<Rant> _rants = new List<Rant>(); 
+        public void AddEntry(Rant rant)
         {
-            // Initialize with some accounts
-            accounts.Add("Brit", "1201");
-            accounts.Add("Taniah", "1234");
+            _rants.Add(rant);
         }
-
-        public List<Rant> LoadRants() => rantEntries;
-        public void SaveRants() { }
-        public bool HasEntries() => rantEntries.Any();
-
-        public void AddEntry(Rant entry) => rantEntries.Add(entry);
 
         public void DeleteEntry(int index)
         {
-            if (index < 0 || index >= rantEntries.Count)
+            if (index >= 0 && index < _rants.Count)
             {
-                throw new IndexOutOfRangeException("Invalid rant index.");
+                _rants.RemoveAt(index);
             }
-            rantEntries.RemoveAt(index);
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), "Index out of range.");
+            }
         }
 
-        public void UpdateEntry(int index, Rant newEntry)
+        public List<Rant> LoadRants()
         {
-            if (index < 0 || index >= rantEntries.Count)
-            {
-                throw new IndexOutOfRangeException("Invalid rant index.");
-            }
-            rantEntries[index] = newEntry;
+            return new List<Rant>(_rants); 
         }
 
-        public List<Rant> SearchEntry(string keyWord) =>
-            rantEntries.Where(entry => entry.Rants.ToLower().Contains(keyWord.ToLower())).ToList();
+        public void SaveRants(List<Rant> rants)
+        {
+            _rants = new List<Rant>(rants); 
+        }
 
+        public List<Rant> SearchEntry(string keyword)
+        {
+            return _rants.Where(r => r.Content.ToLowerInvariant().Contains(keyword.ToLowerInvariant())).ToList();
+        }
 
-        public bool ValidateAccount(string userName, string pin) =>
-            accounts.ContainsKey(userName) && accounts[userName] == pin;
+        public void UpdateEntry(int index, Rant newRant)
+        {
+            if (index >= 0 && index < _rants.Count)
+            {
+                _rants[index] = newRant;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), "Index out of range.");
+            }
+        }
+
+        public bool ValidateAccount(string username, string pin)
+        {
+            if (username == "brit" && pin == "1201")  return true;
+            if (username == "raniah" && pin == "1234") return true;
+            return false;
+        }
     }
 }

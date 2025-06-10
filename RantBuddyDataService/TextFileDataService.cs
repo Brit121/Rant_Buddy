@@ -1,88 +1,98 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using RantBuddyCommon;
+
 namespace RantBuddyDataService
 {
-    public class TextFileDataService : RantDataService
+    public class TextFileDataService : IRantDataService
     {
-        const string accountsFilePath = "accounts.txt";
-        const string rantsFilePath = "rants.txt";
-        Dictionary<string, string> accounts = new Dictionary<string, string>();
-        List<Rant> rantEntries = new List<Rant>();
+        private readonly string filePath = "userInputs.txt";
 
-        public TextFileDataService()
+        private List<RBAccount> accounts = new List<RBAccount>
         {
-            LoadAccounts();
-            LoadRants();
+            new RBAccount("brit", "1201"),
+            new RBAccount("taniah", "1234")
+        };
+
+        public bool ValidateAccount(string username, string pin)
+        {
+            return accounts.Any(acc =>
+                string.Equals(acc.UserName, username, StringComparison.OrdinalIgnoreCase)
+                && acc.Pin == pin);
         }
 
-        private void LoadAccounts()
+        public void AddEntry(Rant rant)
         {
-            if (File.Exists(accountsFilePath))
+            string entry = $"Username: {rant.Username}\nContent: {rant.Content}\n---";
+            File.AppendAllText(filePath, entry + Environment.NewLine);
+        }
+
+        public List<Rant> LoadRants()
+        {
+            var rants = new List<Rant>();
+            if (!File.Exists(filePath)) return rants;
+
+            var lines = File.ReadAllLines(filePath);
+            string username = null;
+            string content = null;
+
+            foreach (var line in lines)
             {
-                try
+                if (line.StartsWith("Username: "))
                 {
-                    accounts = File.ReadAllLines(accountsFilePath)
-                        .Select(line => line.Split('|'))
-                        .Where(parts => parts.Length == 2)
-                        .ToDictionary(parts => parts[0].Trim(), parts => parts[1].Trim());
+                    username = line.Substring(10).Trim();
                 }
-                catch (Exception ex)
+                else if (line.StartsWith("Content: "))
                 {
-                    Console.WriteLine($"Error loading accounts: {ex.Message}");
+                    content = line.Substring(9).Trim();
+                }
+                else if (line.Trim() == "---" && username != null && content != null)
+                {
+                    rants.Add(new Rant { Username = username, Content = content });
+                    username = null;
+                    content = null;
                 }
             }
-        }
 
-        public List<Rant> LoadRants() => rantEntries;
-
-        public void SaveRants()
-        {
-            try
-            {
-                File.WriteAllLines(rantsFilePath, rantEntries.Select(rant => rant.Rants));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error saving rants: {ex.Message}");
-            }
-        }
-
-        public void AddEntry(Rant entry)
-        {
-            rantEntries.Add(entry);
-            SaveRants();
+            return rants;
         }
 
         public void DeleteEntry(int index)
         {
-            if (index >= 0 && index < rantEntries.Count)
-            {
-                rantEntries.RemoveAt(index);
-                SaveRants();
-            }
-            else
-            {
-                throw new IndexOutOfRangeException("Invalid rant index.");
-            }
+            var rants = LoadRants();
+            if (index < 0 || index >= rants.Count) return;
+
+            rants.RemoveAt(index);
+            SaveAll(rants);
         }
 
-        public void UpdateEntry(int index, Rant newEntry)
+        public void UpdateEntry(int index, Rant newRant)
         {
-            if (index >= 0 && index < rantEntries.Count)
-            {
-                rantEntries[index] = newEntry;
-                SaveRants();
-            }
-            else         
-            {
-                throw new IndexOutOfRangeException("Invalid rant index.");
-            }
+            var rants = LoadRants();
+            if (index < 0 || index >= rants.Count) return;
+
+            rants[index] = newRant;
+            SaveAll(rants);
         }
 
-        public List<Rant> SearchEntry(string keyword) =>
-            rantEntries.Where(entry => entry.Rants.ToLower().Contains(keyword.ToLower())).ToList();
+        public List<Rant> SearchEntry(string keyword)
+        {
+            return LoadRants()
+                .Where(r => r.Content.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
 
-        public bool ValidateAccount(string userName, string pin) =>
-            accounts.ContainsKey(userName) && accounts[userName] == pin;
+        private void SaveAll(List<Rant> rants)
+        {
+            var entries = rants.Select(r => $"Username: {r.Username}\nContent: {r.Content}\n---");
+            File.WriteAllLines(filePath, entries);
+        }
 
+        public void SaveRants(List<Rant> rants)
+        {
+            SaveAll(rants);
+        }
     }
 }

@@ -3,24 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace RantBuddyCommon
 {
     public class RBAccount
     {
-        // stores the account information of the user.
-        private string _pin = "1201";
-        public string Pin
-        {
-            get { return _pin; }
-            set
-            {
-                if (value.Length == 4 || value.Length == 6)
-                {
-                    _pin = value;
-                }
-            }
-        }
         public string UserName { get; set; }
+        public string Pin { get; set; }
+        public RBAccount(string userName, string pin)
+        {
+            UserName = userName;
+            Pin = pin;
+        }
+        public RBAccount() { }
+
     }
 }
