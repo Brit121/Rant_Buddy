@@ -13,12 +13,12 @@ namespace RantBuddy
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, Welcome to Rant Buddy!");
+            Console.WriteLine("Hello Dear, Welcome to your Rant Buddy!");
 
             // Login loop
             while (true)
             {
-                Console.WriteLine("\nPlease enter your Username: ");
+                Console.WriteLine("\nKindly please enter your Username: ");
                 string username = Console.ReadLine();
                 if (string.IsNullOrEmpty(username))
                 {
@@ -26,7 +26,7 @@ namespace RantBuddy
                     continue;
                 }
 
-                Console.WriteLine("Please enter your 4-digits pin: ");
+                Console.WriteLine("Kindly please also enter your 4-digits pin: ");
                 string pin = Console.ReadLine();
                 if (string.IsNullOrEmpty(pin))
                 {
@@ -45,7 +45,8 @@ namespace RantBuddy
                 }
             }
 
-            Console.WriteLine($"\n----------------- Welcome, {currentUsername}! Logged in successfully! -----------------");
+            Console.WriteLine
+                ($"\n----------------- Welcome, {currentUsername}! Logged in successfully! -----------------");
 
             int choice;
             do
@@ -82,14 +83,14 @@ namespace RantBuddy
         {
             while (true)
             {
-                Console.WriteLine("Enter your choice (1-6): ");
+                Console.WriteLine("Please enter your choice (From 1-6 only.): ");
                 string input = Console.ReadLine();
 
                 if (int.TryParse(input, out int choice) && choice >= 1 && choice <= 6)
                 {
                     return choice;
                 }
-                Console.WriteLine("Invalid choice. Please enter a number between 1 and 6.");
+                Console.WriteLine("Invalid choice. Please choose a number from 1 to 6 only.");
             }
         }
 
@@ -154,7 +155,7 @@ namespace RantBuddy
                 Console.WriteLine($"{i + 1}. {userRants[i].Content}");
             }
 
-            Console.Write("Enter the number of the entry you want to update: ");
+            Console.Write("Enter the index number of the entry you want to update: ");
             if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= userRants.Count)
             {
                 Console.Write("Enter the new content: ");
@@ -172,7 +173,7 @@ namespace RantBuddy
             }
             else
             {
-                Console.WriteLine("Invalid entry number.");
+                Console.WriteLine("Invalid entry index number.");
             }
         }
 
@@ -194,7 +195,7 @@ namespace RantBuddy
                 Console.WriteLine($"{i + 1}. {userRants[i].Content}");
             }
 
-            Console.Write("Enter the number of the entry you want to delete: ");
+            Console.Write("Enter the index number of the entry you want to delete: ");
             if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= userRants.Count)
             {
                 rant.DeleteRant(index - 1);

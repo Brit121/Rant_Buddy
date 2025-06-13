@@ -1,36 +1,27 @@
 ﻿using System.Collections.Generic;
 using RantBuddyCommon;
-using RantBuddyDataService;
 
-namespace RantBuddy
+namespace RantBuddyDataService
 {
     public class RantService
     {
-        private IRantDataService dataService;
-
-        public JSONFileDataService JSONFileDataService { get; }
-
+        private readonly IRantDataService dataService;
         public RantService()
         {
-           // dataService = new JSONFileDataService(); //for JSON
-           // dataService = new TextFileDataService(); //for TextFile
-            dataService = new InMemoryDataService(); //for InMemory
+            // dataService = new JSONFileDataService(); //for JSON
+            //dataService = new TextFileDataService(); //for TextFile
+            // dataService = new InMemoryDataService(); //for InMemory
+             dataService = new DBRantDataService(); //for database 
         }
 
-        public RantService(JSONFileDataService jSONFileDataService)
+        public bool ValidateAccount(string u, string p)
         {
-            JSONFileDataService = jSONFileDataService;
-            dataService = jSONFileDataService; 
+            return dataService.ValidateAccount(u, p);
         }
 
-        public bool ValidateAccount(string username, string pin)
+        public void AddRant(Rant r)
         {
-            return dataService.ValidateAccount(username, pin);
-        }
-
-        public void AddRant(Rant rant)
-        {
-            dataService.AddEntry(rant);
+            dataService.AddEntry(r);
         }
 
         public List<Rant> GetRants()
@@ -38,19 +29,19 @@ namespace RantBuddy
             return dataService.LoadRants();
         }
 
-        public void UpdateRant(int index, Rant newRant)
+        public void UpdateRant(int i, Rant r)
         {
-            dataService.UpdateEntry(index, newRant);
+            dataService.UpdateEntry(i, r);
         }
 
-        public void DeleteRant(int index)
+        public void DeleteRant(int i)
         {
-            dataService.DeleteEntry(index);
+            dataService.DeleteEntry(i);
         }
 
-        public List<Rant> SearchRants(string keyword)
+        public List<Rant> SearchRants(string k)
         {
-            return dataService.SearchEntry(keyword);
+            return dataService.SearchEntry(k);
         }
     }
 }

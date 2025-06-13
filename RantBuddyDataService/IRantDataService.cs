@@ -5,12 +5,13 @@ namespace RantBuddyDataService
 {
     public interface IRantDataService
     {
-        bool ValidateAccount(string username, string pin);
-        void AddEntry(Rant rant);
         List<Rant> LoadRants();
+        void SaveRants();  
+        bool HasEntries();
+        void AddEntry(Rant rant);
+        void UpdateEntry(int index, Rant rant);
         void DeleteEntry(int index);
-        void UpdateEntry(int index, Rant newRant);
         List<Rant> SearchEntry(string keyword);
-        void SaveRants(List<Rant> rants);
+        bool ValidateAccount(string username, string pin);
     }
 }

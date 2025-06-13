@@ -8,91 +8,62 @@ namespace RantBuddyDataService
 {
     public class TextFileDataService : IRantDataService
     {
-        private readonly string filePath = "userInputs.txt";
-
-        private List<RBAccount> accounts = new List<RBAccount>
+        private readonly string path = "userInputs.txt";
+        private readonly List<Rant> rants = new();
+        private readonly Dictionary<string, string> accounts = new()
         {
-            new RBAccount("brit", "1201"),
-            new RBAccount("taniah", "1234")
+            { "brit", "1201" }, { "taniah", "1234" }
         };
 
-        public bool ValidateAccount(string username, string pin)
-        {
-            return accounts.Any(acc =>
-                string.Equals(acc.UserName, username, StringComparison.OrdinalIgnoreCase)
-                && acc.Pin == pin);
-        }
-
-        public void AddEntry(Rant rant)
-        {
-            string entry = $"Username: {rant.Username}\nContent: {rant.Content}\n---";
-            File.AppendAllText(filePath, entry + Environment.NewLine);
-        }
+        public TextFileDataService() { LoadRants(); }
 
         public List<Rant> LoadRants()
         {
-            var rants = new List<Rant>();
-            if (!File.Exists(filePath)) return rants;
+            rants.Clear();
+            if (!File.Exists(path)) return rants;
 
-            var lines = File.ReadAllLines(filePath);
-            string username = null;
-            string content = null;
-
-            foreach (var line in lines)
+            foreach (var line in File.ReadAllLines(path))
             {
-                if (line.StartsWith("Username: "))
-                {
-                    username = line.Substring(10).Trim();
-                }
-                else if (line.StartsWith("Content: "))
-                {
-                    content = line.Substring(9).Trim();
-                }
-                else if (line.Trim() == "---" && username != null && content != null)
-                {
-                    rants.Add(new Rant { Username = username, Content = content });
-                    username = null;
-                    content = null;
-                }
+                var parts = line.Split('|');
+                if (parts.Length == 2)
+                    rants.Add(new Rant { Username = parts[0], Content = parts[1] });
             }
-
             return rants;
         }
 
-        public void DeleteEntry(int index)
+        private void SaveRants()
         {
-            var rants = LoadRants();
-            if (index < 0 || index >= rants.Count) return;
-
-            rants.RemoveAt(index);
-            SaveAll(rants);
+            File.WriteAllLines(path, rants.Select(x => $"{x.Username}|{x.Content}"));
         }
 
-        public void UpdateEntry(int index, Rant newRant)
+        public void AddEntry(Rant r) 
         {
-            var rants = LoadRants();
-            if (index < 0 || index >= rants.Count) return;
-
-            rants[index] = newRant;
-            SaveAll(rants);
+            rants.Add(r); SaveRants(); 
+        }
+        public void UpdateEntry(int i, Rant r) 
+        { if (i >= 0 && i < rants.Count) { rants[i] = r; SaveRants(); } 
+        }
+        public void DeleteEntry(int i) 
+        { if (i >= 0 && i < rants.Count) { rants.RemoveAt(i); SaveRants(); } 
+        }
+        public List<Rant> SearchEntry(string k)
+        {
+            return rants.Where(x => x.Content.Contains(k, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
-        public List<Rant> SearchEntry(string keyword)
+        public bool HasEntries()
         {
-            return LoadRants()
-                .Where(r => r.Content.Contains(keyword, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            return rants.Any();
         }
 
-        private void SaveAll(List<Rant> rants)
+        public bool ValidateAccount(string u, string p)
         {
-            var entries = rants.Select(r => $"Username: {r.Username}\nContent: {r.Content}\n---");
-            File.WriteAllLines(filePath, entries);
+            return accounts.ContainsKey(u) && accounts[u] == p;
         }
 
-        public void SaveRants(List<Rant> rants)
+        void IRantDataService.SaveRants()
         {
-            SaveAll(rants);
+            SaveRants();
         }
     }
 }
