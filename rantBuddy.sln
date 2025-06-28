@@ -11,6 +11,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RantBuddyDataService", "Ran
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RantBuddyCommon", "RantBuddyCommon\RantBuddyCommon.csproj", "{0E4D0939-A809-4DCB-88BF-5BED47BF02EB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RantBuddyDesktop", "..\formLogin\RantBuddyDesktop.csproj", "{2C1310F4-D8ED-48E2-BBB5-A4F40F8CF4E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +40,10 @@ Global
 		{0E4D0939-A809-4DCB-88BF-5BED47BF02EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E4D0939-A809-4DCB-88BF-5BED47BF02EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E4D0939-A809-4DCB-88BF-5BED47BF02EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C1310F4-D8ED-48E2-BBB5-A4F40F8CF4E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C1310F4-D8ED-48E2-BBB5-A4F40F8CF4E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C1310F4-D8ED-48E2-BBB5-A4F40F8CF4E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C1310F4-D8ED-48E2-BBB5-A4F40F8CF4E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

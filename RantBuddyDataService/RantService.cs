@@ -8,7 +8,7 @@ namespace RantBuddyDataService
         private readonly IRantDataService dataService;
         public RantService()
         {
-            // dataService = new JSONFileDataService(); //for JSON
+            //dataService = new JSONFileDataService(); //for JSON
             //dataService = new TextFileDataService(); //for TextFile
             // dataService = new InMemoryDataService(); //for InMemory
              dataService = new DBRantDataService(); //for database 

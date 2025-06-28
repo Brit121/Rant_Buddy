@@ -12,7 +12,7 @@ namespace RantBuddyDataService
         private readonly List<Rant> rants = new();
         private readonly Dictionary<string, string> accounts = new()
         {
-            { "brit", "1201" }, { "taniah", "1234" }
+            { "brit", "1111" }, { "taniah", "5555" }
         };
 
         public TextFileDataService() { LoadRants(); }
