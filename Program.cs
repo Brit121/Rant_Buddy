@@ -8,7 +8,7 @@ namespace RantBuddy
 {
     internal class Program
     {
-        static RantService rant = new RantService();
+        static RantBuddy_Service rant = new RantBuddy_Service();
         static string currentUsername = "";
 
         static void Main(string[] args)
@@ -114,7 +114,6 @@ namespace RantBuddy
             }
         }
 
-
         static void RetrieveOrViewEntries()
         {
             var userRants = rant.GetRants()
@@ -130,7 +129,7 @@ namespace RantBuddy
             Console.WriteLine("\nYour Entries:");
             for (int i = 0; i < userRants.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. {userRants[i].Content}"); // <-- This line shows index-based display
+                Console.WriteLine($"{i + 1}. {userRants[i].Content}");
             }
         }
 
@@ -162,7 +161,10 @@ namespace RantBuddy
                 {
                     var selectedRant = userRants[index - 1];
                     selectedRant.Content = newContent;
-                    rant.UpdateRant(selectedRant.Id, selectedRant);
+
+                    // Pass the index to update
+                    rant.UpdateRant(index - 1, selectedRant);
+
                     Console.WriteLine("Entry updated successfully!");
                 }
                 else
@@ -197,8 +199,8 @@ namespace RantBuddy
             Console.Write("Enter the number of the entry to delete: ");
             if (int.TryParse(Console.ReadLine(), out int index) && index >= 1 && index <= userRants.Count)
             {
-                int idToDelete = userRants[index - 1].Id;
-                rant.DeleteRant(idToDelete);
+                // Pass the index to delete
+                rant.DeleteRant(index - 1);
                 Console.WriteLine("Entry deleted successfully!");
             }
             else

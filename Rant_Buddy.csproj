@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="RantBuddy_API\**" />
+    <Compile Remove="RantBuddy_BusinessDataLogic\**" />
+    <Compile Remove="RantBuddy_Common\**" />
+    <Compile Remove="RantBuddy_DataService\**" />
+    <Compile Remove="RantBuddy_Desktop\**" />
+    <EmbeddedResource Remove="RantBuddy_API\**" />
+    <EmbeddedResource Remove="RantBuddy_BusinessDataLogic\**" />
+    <EmbeddedResource Remove="RantBuddy_Common\**" />
+    <EmbeddedResource Remove="RantBuddy_DataService\**" />
+    <EmbeddedResource Remove="RantBuddy_Desktop\**" />
+    <None Remove="RantBuddy_API\**" />
+    <None Remove="RantBuddy_BusinessDataLogic\**" />
+    <None Remove="RantBuddy_Common\**" />
+    <None Remove="RantBuddy_DataService\**" />
+    <None Remove="RantBuddy_Desktop\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="RantBuddy_BusinessDataLogic\RantBuddy_BusinessDataLogic.csproj" />
+    <ProjectReference Include="RantBuddy_Common\RantBuddy_Common.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\RantBuddy_BusinessDataLogic\RantBuddy_BusinessDataLogic.csproj" />
+	  <ProjectReference Include="..\RantBuddy_Common\RantBuddy_Common.csproj" />
+	  <ProjectReference Include="..\RantBuddy_DataService\RantBuddy_DataService.csproj" />
+	  <ProjectReference Include="..\Rant_Buddy.csproj" />
+	</ItemGroup>
+
+
+
+</Project>
