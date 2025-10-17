@@ -1,8 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using RantBuddy_BusinessDataLogic;
 using RantBuddyCommon;
 using RantBuddyDataService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RantBuddy
 {
@@ -106,6 +108,17 @@ namespace RantBuddy
             if (!string.IsNullOrWhiteSpace(entry))
             {
                 rant.AddRant(new Rant { Username = currentUsername, Content = entry });
+                var emailService = new Email_Service();
+                string subject = "Entry Added Successfully!";
+                string body = $"Hello!\n\nYour entry has been added.\n" +
+                              $"{entry}";
+
+                bool emailSent = emailService.SendEmail("to@example.com", subject, body);
+
+                if (emailSent)
+                    Console.WriteLine("\n Email confirmation sent successfully!");
+                else
+                    Console.WriteLine("\n⚠️ Email sending failed.");
                 Console.WriteLine("Entry added successfully!");
             }
             else
