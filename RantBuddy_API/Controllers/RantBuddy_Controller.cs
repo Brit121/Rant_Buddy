@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Data.SqlClient;
+using RantBuddy_Common;
+using RantBuddy_BusinessDataLogic;
 
 namespace RantBuddyAPI.Controllers
 {
@@ -8,6 +11,12 @@ namespace RantBuddyAPI.Controllers
     public class RantController : ControllerBase
     {
         private readonly string connectionString = "Data Source=VERSOZA\\SQLEXPRESS;Initial Catalog=Rant_Buddy;Integrated Security=True";
+        private readonly EmailService _emailService;
+
+        public RantController(EmailService emailService)
+        {
+            _emailService = emailService;
+        }
 
         [HttpGet]
         public IActionResult GetRants()
@@ -51,8 +60,20 @@ namespace RantBuddyAPI.Controllers
                 cmd.ExecuteNonQuery();
             }
 
-            return Ok("Rant added successfully.");
+            // ✅ Send email notification
+            try
+            {
+                _emailService.SendEmail(rant.Username, rant.Content);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Email sending failed: {ex.Message}");
+            }
+
+            return Ok("Rant added successfully and email notification sent!");
         }
+
+
 
         [HttpPut]
         public IActionResult UpdateRant([FromBody] Rant rant)
@@ -74,7 +95,16 @@ namespace RantBuddyAPI.Controllers
                     return NotFound("Rant not found.");
             }
 
-            return Ok("Rant updated.");
+            try
+            {
+                _emailService.SendEmail(rant.Username);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Email sending failed: {ex.Message}");
+            }
+
+            return Ok("Rant updated and email notification sent.");
         }
 
         [HttpDelete]
@@ -101,3 +131,4 @@ namespace RantBuddyAPI.Controllers
         }
     }
 }
+

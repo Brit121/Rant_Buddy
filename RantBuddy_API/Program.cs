@@ -1,4 +1,7 @@
 
+using RantBuddy_BusinessDataLogic;
+using RantBuddy_Common;
+
 namespace RantBuddy_API
 {
     public class Program
@@ -7,16 +10,20 @@ namespace RantBuddy_API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            builder.Services.AddAuthorization();
+
+            builder.Services.Configure<EmailSettings>(
+                builder.Configuration.GetSection("EmailSettings")
+            );
+            builder.Services.AddTransient<EmailService>();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -26,7 +33,6 @@ namespace RantBuddy_API
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
